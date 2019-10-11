@@ -1,0 +1,32 @@
+const express = require('express');
+const router = express.Router();
+const sql = require("./sql");
+const example = require("../../main");
+
+const callback = function (data, res) {
+  res.send(data);
+  // 第一个参数：查询出来的数据，第二个是express返回客户端的response类
+};
+/* GET users listing. */
+router.get('/', function(req, res, next) {
+// 查询实例
+  example.websites(sql.sql,[],callback,res);
+});
+
+router.get('/add', function(req, res, next) {
+// 插入实例
+  example.websites(sql.addSql,['菜鸟工具', 'https://c.runoob.com','23453', 'CN'],callback,res);
+});
+
+router.get('/update', function(req, res, next) {
+// 更新实例
+  example.websites(sql.updateSql,['菜鸟移动站', 'https://m.runoob.com',6],callback,res);
+});
+
+router.get('/delete', function(req, res, next) {
+// 删除实例
+  example.websites(sql.delSql,[],callback,res);
+});
+
+
+module.exports = router;
