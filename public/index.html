@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        body{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+        }
+        .content{
+
+        }
+        #text{
+            text-align: center;
+            font-weight: 600;
+            color: red;
+        }
+    </style>
+</head>
+<body>
+<div class="content">
+    <input type="text" id="code">
+    <button onclick="onRqurestClick()">获取验证码</button>
+
+    <p id="text">----</p>
+</div>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script>
+
+    function onRqurestClick() {
+        axios({
+            method: 'post',
+            url: '/users/mobile',
+            data: {
+                code: code.value,
+                name: 'Flintstone'
+            }
+        }).then(function (res) {
+            console.log(res);
+            if(res.data[0]){
+                console.dir(text);
+                text.innerText = res.data[0].fullname+'：'+res.data[0].code;
+            }
+        });
+    }
+</script>
+</body>
+</html>
