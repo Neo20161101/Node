@@ -24,6 +24,7 @@ module.exports = {
                 //results作为数据操作后的结果，fields作为数据库连接的一些字段
                 //停止链接数据库，必须再查询语句后，要不然一调用这个方法，就直接停止链接，数据操作就会失败
                 connection.end(function(err){
+                    console.log('正在关闭数据库连接！');
                     if(err){
                         console.log('关闭数据库连接失败！');
                         throw err;

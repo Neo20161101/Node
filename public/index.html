@@ -5,13 +5,13 @@
     <title>Title</title>
     <style>
         body{
+
+        }
+        .content{
             display: flex;
             justify-content: center;
             align-items: center;
             height: 200px;
-        }
-        .content{
-
         }
         #text{
             text-align: center;
@@ -21,15 +21,34 @@
     </style>
 </head>
 <body>
-<div class="content">
-    <input type="text" id="code">
-    <button onclick="onRqurestClick()">获取验证码</button>
+    <div class="content">
+        <div>
+            <input type="text" id="code">
+            <button onclick="onRqurestClick()">获取验证码</button>
+            <p id="text">----</p>
+        
+        </div>
+    </div>
 
-    <p id="text">----</p>
+<div>
+    
+    <button onclick="onUserClick()">查询账号</button>
 </div>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script>
 
+    function onUserClick() {
+        axios({
+            method: 'get',
+            url: '/users',
+            data: {
+                code: code.value,
+            }
+        }).then(function (res) {
+            console.log(res);
+         
+        });
+    }
     function onRqurestClick() {
         axios({
             method: 'post',
@@ -41,7 +60,6 @@
         }).then(function (res) {
             console.log(res);
             if(res.data[0]){
-                console.dir(text);
                 text.innerText = res.data[0].fullname+'：'+res.data[0].code;
             }
         });

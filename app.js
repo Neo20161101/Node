@@ -1,29 +1,33 @@
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-var createError = require('http-errors');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
+const createError = require('http-errors');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users/users');
-var options = {
-    dotfiles: 'ignore',
-    redirect:true,
-    setHeaders: function (res, path, stat) {
-        res.set('x-timestamp', Date.now());
-        res.set("Access-Control-Allow-Origin", "*");
-        res.set("Access-Control-Allow-Headers", "X-Requested-With");
-        res.set("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS");
-        res.set("X-Powered-By", "3.2.1");
-    }
-}
-var app = express();
+const indexRouter = require('./routes/index');
+const usersRouter = require('./routes/users/users');
+// const options = {
+//     dotfiles: 'ignore',
+//     redirect:true,
+//     setHeaders: function (res, path, stat) {
+//         res.set('x-timestamp', Date.now());
+//         res.set("Access-Control-Allow-Origin", "*");
+//         res.set("Access-Control-Allow-Headers", "X-Requested-With");
+//         res.set("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS");
+//         res.set("X-Powered-By", "3.2.1");
+//     }
+// }
+const app = express();
 
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+// app.engine('.html', ejs.__express) // 设置视图模板引擎使用，为.html
+ 
+app.set('view engine', 'html'); // 设置视图引擎为html
 
 app.all('*', function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
