@@ -25,9 +25,13 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+//app.use('/public', express.static('public'));
+app.get('/index.html', function (req, res) {
+    res.sendFile( __dirname + "/" + "index.html" );
+ })
 // app.engine('.html', ejs.__express) // 设置视图模板引擎使用，为.html
  
-app.set('view engine', 'html'); // 设置视图引擎为html
+// app.set('view engine', 'html'); // 设置视图引擎为html
 
 app.all('*', function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
@@ -35,14 +39,13 @@ app.all('*', function(req, res, next) {
     (req.method=="OPTIONS" && res.send(200)) || next() /*让options请求快速返回*/
 });
 
-
-
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
 
 // 捕获404并转发给错误处理程序
 app.use(function(req, res, next) {
+    console.log("捕获404")
     next(createError(404));
 });
 
