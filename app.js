@@ -6,17 +6,17 @@ const createError = require('http-errors');
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users/users');
-const options = {
-    dotfiles: 'ignore',
-    redirect:true,
-    setHeaders: function (res, path, stat) {
-        res.set('x-timestamp', Date.now());
-        res.set("Access-Control-Allow-Origin", "*");
-        res.set("Access-Control-Allow-Headers", "X-Requested-With");
-        res.set("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS");
-        res.set("X-Powered-By", "3.2.1");
-    }
-}
+// const options = {
+//     dotfiles: 'ignore',
+//     redirect:true,
+//     setHeaders: function (res, path, stat) {
+//         res.set('x-timestamp', Date.now());
+//         res.set("Access-Control-Allow-Origin", "*");
+//         res.set("Access-Control-Allow-Headers", "X-Requested-With");
+//         res.set("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS");
+//         res.set("X-Powered-By", "3.2.1");
+//     }
+// }
 const app = express();
 
 app.use(logger('dev'));
