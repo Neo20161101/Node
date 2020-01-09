@@ -26,6 +26,11 @@ router.get('/delete', function(req, res, next) {
   example.websites(delSql,[]);
 });
 
+router.post('/login', function(req, res, next) {
+  // 登录实例
+    res.send(req.body);
+});
+
 
 router.post('/mobile', function(req, res, next) {
 // 查询手机验证码实例
