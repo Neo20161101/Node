@@ -26,9 +26,12 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 //app.use('/public', express.static('public'));
-app.get('/index.html', function (req, res) {
-    res.sendFile( __dirname + "/" + "index.html" );
- })
+// app.get('/index.html', function (req, res) {
+//     res.sendFile( __dirname + "/" + "index.html" );
+//  })
+app.get('*', function (req, res){
+    res.sendFile(path.resolve(__dirname, 'public', 'index.html'))
+})
 // app.engine('.html', ejs.__express) // 设置视图模板引擎使用，为.html
  
 // app.set('view engine', 'html'); // 设置视图引擎为html

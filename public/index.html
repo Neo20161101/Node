@@ -32,22 +32,35 @@
 
 <div>
     
-    <button onclick="onUserClick()">查询账号</button>
+    <button onclick="onUserClick(0)">分页查询第一页</button>
+    <button onclick="onUserClick(1)">分页查询第二页</button>
+    <button onclick="onLoginOutClick()">退出登录</button>
 </div>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script>
+    function sad () {
 
-    function onUserClick() {
+    }
+    function onUserClick(page) {
         axios({
-            method: 'get',
+            method: 'post',
             url: '/users',
             data: {
-                code: code.value,
+                page,pageSize:10
             }
         }).then(function (res) {
             console.log(res);
          
         });
+    }
+    function onLoginOutClick() {
+        axios({
+            method: 'post',
+            url: '/users/loginout',
+            data: {
+                
+            }
+        })
     }
     function onRqurestClick() {
         axios({

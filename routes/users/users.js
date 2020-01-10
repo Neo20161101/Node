@@ -2,11 +2,13 @@ const express = require('express');
 const router = express.Router();
 const {sql,addSql,updateSql,delSql,mobileSql} = require("./sql");
 const example = require("../../main");
+let loggedIn = false;
 
 /* GET users listing. */
-router.get('/', function(req, res, next) {
+router.post('/', function(req, res, next) {
 // 查询实例
-  example.websites(sql,[]).then(result => {
+  const { page,pageSize } = req.body;
+  example.websites(sql,[page,pageSize]).then(result => {
     res.send(result);
   });
 });
@@ -28,9 +30,24 @@ router.get('/delete', function(req, res, next) {
 
 router.post('/login', function(req, res, next) {
   // 登录实例
-    res.send(req.body);
+  loggedIn = true;
+  res.send(req.body);
 });
 
+router.post('/loginout', function(req, res, next) {
+  // 登录实例
+  loggedIn = false;
+  res.send({code:200,msg:"退出成功"});
+});
+
+router.post('/test', function(req, res, next) {
+  // 登录实例
+  const obj = {code:500,msg:"操作失败"};
+    if(loggedIn){
+      obj.code = 200;
+    }
+    res.send(obj);
+});
 
 router.post('/mobile', function(req, res, next) {
 // 查询手机验证码实例
