@@ -29,17 +29,19 @@ app.use(express.static(path.join(__dirname, 'public')));
 // app.get('/index.html', function (req, res) {
 //     res.sendFile( __dirname + "/" + "index.html" );
 //  })
-app.get('*', function (req, res){
+app.get('*', function (req, res) {
+    // console.log("req1,", req)
     res.sendFile(path.resolve(__dirname, 'public', 'index.html'))
 })
 // app.engine('.html', ejs.__express) // 设置视图模板引擎使用，为.html
- 
+
 // app.set('view engine', 'html'); // 设置视图引擎为html
 
-app.all('*', function(req, res, next) {
+app.all('*', function (req, res, next) {
+    // console.log("req2,", req)
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Content-Type,Content-Length, Authorization, Accept,X-Requested-With,Cache-Control,withcredentials,ApiKey");
-    (req.method=="OPTIONS" && res.send(200)) || next() /*让options请求快速返回*/
+    (req.method == "OPTIONS" && res.send(200)) || next() /*让options请求快速返回*/
 });
 
 app.use('/', indexRouter);
@@ -47,13 +49,13 @@ app.use('/users', usersRouter);
 
 
 // 捕获404并转发给错误处理程序
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
     console.log("捕获404")
     next(createError(404));
 });
 
 // 错误处理
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
     // 设置局部变量，只提供开发中的错误
     res.locals.message = err.message;
     res.locals.error = req.app.get('env') === 'development' ? err : {};
