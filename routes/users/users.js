@@ -50,6 +50,22 @@ router.post('/test', function (req, res, next) {
   res.send(obj);
 });
 
+router.post('/menu', function (req, res, next) {
+  // 登录实例
+  const obj = [
+    { code: 200, msg: "操作成功" },
+    {
+      path: "/login",
+      name: 'Login',
+      icon: "user",
+      hideInMenu: true,
+      component: lazy(() => import('../User/Login/index'))
+    }
+  ];
+
+  res.send(obj);
+});
+
 router.post('/mobile', function (req, res, next) {
   // 查询手机验证码实例
   const { code } = req.body;
