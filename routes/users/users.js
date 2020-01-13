@@ -35,13 +35,13 @@ router.post('/login', function (req, res, next) {
 });
 
 router.post('/loginout', function (req, res, next) {
-  // 登录实例
+  // 退出实例
   loggedIn = false;
   res.send({ code: 200, msg: "退出成功" });
 });
 
 router.post('/test', function (req, res, next) {
-  // 登录实例
+  // 测试实例
   const obj = { code: 500, msg: "操作失败" };
   if (loggedIn) {
     obj.code = 200;
@@ -52,8 +52,7 @@ router.post('/test', function (req, res, next) {
 
 router.post('/menu', function (req, res, next) {
   // 登录实例
-  const obj = [
-    { code: 200, msg: "操作成功" },
+  const obj = { code: 200, msg: "操作成功" ,data:[
     {
       path: "/login",
       name: 'Login',
@@ -61,7 +60,7 @@ router.post('/menu', function (req, res, next) {
       hideInMenu: true,
       component: lazy(() => import('../User/Login/index'))
     }
-  ];
+  ]};
 
   res.send(obj);
 });
