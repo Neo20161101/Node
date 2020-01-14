@@ -52,15 +52,45 @@ router.post('/test', function (req, res, next) {
 
 router.post('/menu', function (req, res, next) {
   // 登录实例
-  const obj = { code: 200, msg: "操作成功" ,data:[
+  const obj = { 
+    code: loggedIn?200:500, msg: "操作成功" ,
+    data:[
     {
-      path: "/login",
-      name: 'Login',
+      path: "/tacos",
+      name: 'tacos',
+      icon: "home"
+    },
+    {
+      path: "/tac",
+      name: 'tac',
       icon: "user",
-      hideInMenu: true,
-      component: lazy(() => import('../User/Login/index'))
-    }
-  ]};
+      child:[
+        {
+          path: "/tac/bus",
+          name: "/tac/bus",
+          routes: [
+              {
+                  path: "/tac/bus/bus2",
+                  name: "/tac/bus/bus2",
+              },
+              {
+                  path: "/tac/bus/bus3",
+                  name: "/tac/bus/bus3"
+              }
+          ]
+      },
+      {
+          path: "/tac/cart",
+          name: "/tac/Cart"
+      }
+      ]
+    },
+    {
+        path: "/about",
+        name: 'About',
+        icon: "user"
+    }]
+};
 
   res.send(obj);
 });
