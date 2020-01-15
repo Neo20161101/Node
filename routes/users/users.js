@@ -68,7 +68,7 @@ router.post('/menu', function (req, res, next) {
         {
           path: "/tac/bus",
           name: "/tac/bus",
-          routes: [
+          child: [
               {
                   path: "/tac/bus/bus2",
                   name: "/tac/bus/bus2",
