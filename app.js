@@ -31,7 +31,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 //  })
 app.get('*', function (req, res) {
     // console.log("req1,", req)
-    res.sendFile(path.resolve(__dirname, 'public/myapp/', 'index.html'))
+    res.sendFile(path.resolve(__dirname, 'public', 'index.html'))
 })
 // app.engine('.html', ejs.__express) // 设置视图模板引擎使用，为.html
 
