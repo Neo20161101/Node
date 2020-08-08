@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const { sql, addSql, updateSql, delSql, mobileSql } = require("./sql");
 const example = require("../../main");
-let loggedIn = false;
 
 /* GET users listing. */
 router.post('/', function (req, res, next) {
@@ -28,32 +27,15 @@ router.get('/delete', function (req, res, next) {
   example.websites(delSql, []);
 });
 
-router.post('/login', function (req, res, next) {
-  // 登录实例
-  loggedIn = true;
-  res.send(req.body);
-});
-
-router.post('/loginout', function (req, res, next) {
-  // 退出实例
-  loggedIn = false;
-  res.send({ code: 200, msg: "退出成功" });
-});
-
 router.post('/test', function (req, res, next) {
   // 测试实例
-  const obj = { code: 500, msg: "操作失败" };
-  if (loggedIn) {
-    obj.code = 200;
-    obj.msg = "操作成功";
-  }
+  const obj = { code: 200, msg: "操作成功" };
   res.send(obj);
 });
 
 router.post('/menu', function (req, res, next) {
-  // 登录实例
-  const obj = { 
-    code: loggedIn?200:500, msg: "操作成功" ,
+  const obj = {
+    code: 200, msg: "操作成功" ,
     data:[
     {
       path: "/tacos",
@@ -98,11 +80,10 @@ router.post('/menu', function (req, res, next) {
 router.post('/mobile', function (req, res, next) {
   // 查询手机验证码实例
   const { code } = req.body;
-  console.log("req,", req.query, req.body);
+  // console.log("req,", req.query, req.body);
   example.websites(mobileSql, [code]).then(result => {
     res.send(result);
   });
 });
-
 
 module.exports = router;

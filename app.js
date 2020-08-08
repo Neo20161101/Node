@@ -1,83 +1,83 @@
 const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
-const logger = require('morgan');
+const logger = require('morgan');//日志
 const createError = require('http-errors');
+const fs = require('fs');
+const FileStreamRotator = require('file-stream-rotator');
+const common = require('./util/common');
 // const ReactDOMServer = require("react-dom/server");
 // const {renderToStaticMarkup,renderToNodeStream} = require('react-dom/server');
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users/users');
-// const options = {
-//     dotfiles: 'ignore',
-//     redirect:true,
-//     setHeaders: function (res, path, stat) {
-//         res.set('x-timestamp', Date.now());
-//         res.set("Access-Control-Allow-Origin", "*");
-//         res.set("Access-Control-Allow-Headers", "X-Requested-With");
-//         res.set("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS");
-//         res.set("X-Powered-By", "3.2.1");
-//     }
-// }
+
 const app = express();
+const logDirectory = path.join(__dirname, 'log');//日志输出流配置
+// ensure log directory exists
+fs.existsSync(logDirectory) || fs.mkdirSync(logDirectory)
+
+// create a rotating write stream
+var accessLogStream = FileStreamRotator.getStream({
+  date_format: 'YYYY-MM-DD',
+  filename: path.join(logDirectory, 'access-%DATE%.log'),
+  frequency: 'daily',
+  verbose: false
+})
 
 app.all('*', function (req, res, next) {
-    // console.log("req2,", req)
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Content-Type,Content-Length, Authorization, Accept,X-Requested-With,Cache-Control,withcredentials,ApiKey");
-    (req.method == "OPTIONS" && res.send(200)) || next() /*让options请求快速返回*/
+  // console.log("req2,", req)
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Content-Type,Content-Length, Authorization, Accept,X-Requested-With,Cache-Control,withcredentials,ApiKey");
+  (req.method == "OPTIONS" && res.send(200)) || next() /*让options请求快速返回*/
 });
 
 
-
-app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+//4xx and 5xx打印日志short
+app.use(logger('dev',{skip: function (req, res) { return res.statusCode < 400 }}));
+app.use(logger('combined', {stream: accessLogStream}));//保存日志到log
+app.use(express.json());//解析data数据
+app.use(express.urlencoded({ extended: false }));//解析兼容请求数据格式
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public/index')));
-
-app.use(function(req,res,next){
-    console.log("url,",req.url);
-    if(req.url.startsWith('/users') || req.url.startsWith('/myapp') || req.url.startsWith('/static')){
-      return next()
-    }
-    //如果访问url根路径不是user或者static就返回打包后的主页面
-    // return res.render('index', {
-    //     component: ReactDOMServer.renderToNodeStream(path.resolve(__dirname, 'public/myapp', 'index.html'))
-    // });
-    return res.sendFile(path.resolve(__dirname, 'public/index', 'index.html'))
-  })
-
-// app.get('*', function (req, res) {
-//     console.log("req1,", req)
-//     //res.sendFile(path.resolve(__dirname, 'public', 'index.html'))
-// })
-// app.engine('.html', ejs.__express) // 设置视图模板引擎使用，为.html
-
-// app.set('view engine', 'html'); // 设置视图引擎为html
 
 
+// app.use(express.static(path.join(__dirname, 'public')));
 //映射public文件路径，项目上要使用
-// app.use('/',express.static(path.resolve('public')))
+app.use('/',express.static(path.resolve('public')))
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
 
-// 捕获404并转发给错误处理程序
+
 app.use(function (req, res, next) {
-    console.log("捕获404")
-    next(createError(404));
+  //条件：访问特定项目文件夹
+  if (req.url.startsWith('/image')) {
+    return next(createError(404))// 捕获404并转发给错误处理程序
+  }
+  if(req.method=='GET'){
+    return res.sendFile(path.resolve(__dirname, 'public', 'index.html'))
+  }
+  //如果访问url根路径不是user或者static就返回打包后的主页面
+  // return res.render('index', {//需要服务端渲染
+  //     component: ReactDOMServer.renderToNodeStream(path.resolve(__dirname, 'public', 'index.html'))
+  // });
+  next(createError(404));// 捕获404并转发给错误处理程序
 });
 
 // 错误处理
 app.use(function (err, req, res, next) {
-    // 设置局部变量，只提供开发中的错误
-    res.locals.message = err.message;
-    res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-    // 渲染错误页面
-    res.status(err.status || 500);
-    res.render('error');
+  // 设置局部变量，只提供开发中的错误
+  const code = err.status || 500;
+  const error = JSON.stringify({"状态码":code,ReferenceError:err.message,error:err,"格林时间":req._startTime})
+  res.locals.message = err.message;
+  res.locals.error = req.app.get('env') === 'development' ? err : {};
+  common.writeLog(error);//错误日志写入
+  // 渲染错误页面
+  res.status(code);
+  res.send({code:code,msg:err.message});
 });
+
+
+
 
 module.exports = app;
