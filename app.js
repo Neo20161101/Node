@@ -51,16 +51,18 @@ app.use('/users', usersRouter);
 
 app.use(function (req, res, next) {
   //条件：访问特定项目文件夹
+  console.log(req.url)
   if (req.url.startsWith('/image')) {
     return next(createError(404))// 捕获404并转发给错误处理程序
   }
   if(req.method=='GET'){
+    //如果访问url根路径不是image或者static就返回打包后的主页面
+    // return res.render('index', {//需要服务端渲染
+    //     component: ReactDOMServer.renderToNodeStream(path.resolve(__dirname, 'public', 'index.html'))
+    // });
     return res.sendFile(path.resolve(__dirname, 'public', 'index.html'))
   }
-  //如果访问url根路径不是user或者static就返回打包后的主页面
-  // return res.render('index', {//需要服务端渲染
-  //     component: ReactDOMServer.renderToNodeStream(path.resolve(__dirname, 'public', 'index.html'))
-  // });
+
   next(createError(404));// 捕获404并转发给错误处理程序
 });
 
